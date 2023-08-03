@@ -17,12 +17,12 @@ class Img:
         self.path = Path(path)
         self.data = rgb2gray(imread(path)).tolist()
 
-    def save_img(self):
+    def save_img(self,pictrs_arr):
         """
         Do not change the below implementation
         """
         new_path = self.path.with_name(self.path.stem + '_filtered' + self.path.suffix)
-        imsave(new_path, self.data, cmap='gray')
+        imsave(new_path, pictrs_arr, cmap='gray')
         return new_path
 
     def blur(self, blur_level=16):
@@ -51,16 +51,38 @@ class Img:
             self.data[i] = res
 
     def rotate(self):
-        # TODO remove the `raise` below, and write your implementation
-        raise NotImplementedError()
+        rot_img = []
+        tmp_lst = []
+
+        for col in range(len(self.data[0])):
+            for list_no in range(len(self.data)):
+                tmp_lst.append(self.data[list_no][col])
+
+            tmp_lst.reverse()
+            rot_img.append(tmp_lst)
+            tmp_lst = []
+        return rot_img
 
     def salt_n_pepper(self):
         # TODO remove the `raise` below, and write your implementation
         raise NotImplementedError()
 
     def concat(self, other_img, direction='horizontal'):
-        # TODO remove the `raise` below, and write your implementation
-        raise NotImplementedError()
+
+        if direction == 'horizontal':
+           concat_img = []
+           for i in range(len(self.data)):
+               for j in range(len(other_img.data)):
+                   self.data[i].append(other_img.data[i][j])
+           return self.data
+        else:
+           concat_img = []
+           for i in range(len(self.data)):
+               concat_img.append(self.data[i])
+
+           for i in range(len(other_img.data)):
+               concat_img.append(other_img.data[i])
+           return concat_img
 
     def segment(self):
         # TODO remove the `raise` below, and write your implementation
