@@ -9,7 +9,6 @@ def rgb2gray(rgb):
 
 
 class Img:
-
     def __init__(self, path):
         """
         Do not change the constructor implementation
@@ -26,7 +25,6 @@ class Img:
         return new_path
 
     def blur(self, blur_level=16):
-
         height = len(self.data)
         width = len(self.data[0])
         filter_sum = blur_level ** 2
@@ -68,21 +66,19 @@ class Img:
         raise NotImplementedError()
 
     def concat(self, other_img, direction='horizontal'):
-
+        concat_img = []
         if direction == 'horizontal':
-           concat_img = []
-           for i in range(len(self.data)):
-               for j in range(len(other_img.data)):
-                   self.data[i].append(other_img.data[i][j])
-           return self.data
+            for i in range(len(self.data)):
+                for j in range(len(other_img.data)):
+                    self.data[i].append(other_img.data[i][j])
+            return self.data
         else:
-           concat_img = []
-           for i in range(len(self.data)):
-               concat_img.append(self.data[i])
+            for i in range(len(self.data)):
+                concat_img.append(self.data[i])
 
-           for i in range(len(other_img.data)):
-               concat_img.append(other_img.data[i])
-           return concat_img
+            for i in range(len(other_img.data)):
+                concat_img.append(other_img.data[i])
+            return concat_img
 
     def segment(self):
         # TODO remove the `raise` below, and write your implementation
