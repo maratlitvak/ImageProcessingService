@@ -109,8 +109,6 @@ class ImageProcessingBot(Bot):
                         img_proc.salt_n_pepper()
                     case "Segment":
                         img_proc.segment()
-                    case _:
-                        action - default
                 #self.send_text_with_quote(msg['chat']['id'], "Please Enter Picture Name:", quoted_msg_id=msg["message_id"])
 
         #if msg["text"] != 'Please don\'t quote me':
