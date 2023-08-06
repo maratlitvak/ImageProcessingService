@@ -3,7 +3,7 @@ from loguru import (logger)
 import os
 import time
 from telebot.types import InputFile
-import img_proc
+from img_proc import img_proc
 
 
 class Bot:
