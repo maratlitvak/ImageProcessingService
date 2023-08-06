@@ -95,9 +95,3 @@ class ImageProcessingBot(Bot):
                 img_proc.segment()
 
         self.send_photo(msg['chat']['id'], img_path)
-
-
-        #if msg["text"] != 'Please don\'t quote me':
-        #    self.send_text_with_quote(msg['chat']['id'], msg["text"], quoted_msg_id=msg["message_id"])
-
-
