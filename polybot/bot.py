@@ -77,39 +77,29 @@ class QuoteBot(Bot):
 
 
 class ImageProcessingBot(Bot):
-    def check_f_exist(self, fname):
-        return os.path.exists(fname)
 
     def handle_message(self, msg):
-        my_img2 =[]
-        captions = ['Concat', 'Rotate', 'Salt_n_pepper','Segment']
+        pat = self.download_user_photo(msg)
+        my_img = img_proc.Img(pat)
+        match msg['caption']:
+            case "Concat":
+                my_img_2 = img_proc.Img(pat)
+                if len(my_img.data) != len(my_img_2.data):
+                    raise RuntimeError
+                if len(my_img.data[0]) != len(my_img_2.data[0]):
+                    raise RuntimeError
+                img_path = my_img_2.save_img(my_img.concat(my_img_2, 'horizontal'))
+            case "Rotate":
+                img_path = my_img.save_img(my_img.rotate())
+            case "Salt_n_pepper":
+                img_proc.salt_n_pepper()
+            case "Segment":
+                img_proc.segment()
 
-        logger.info(f'Get message: {msg}')
+        self.send_photo(msg['chat']['id'], img_path)
 
-        if msg['chat']['last_name'] == 'Litvak':
-            bot_mesg = msg["text"].split(';')
-            fname = "test/" + bot_mesg[0]
-            res = self.check_f_exist(fname)
-            if not res:
-                self.send_text_with_quote(msg['chat']['id'], "File picture not found !", quoted_msg_id=msg["message_id"])
-            else:
-                my_img = img_proc.Img(fname)
-                cap = bot_mesg[1]
-                match cap:
-                    case "Concat":
-                        my_img_4_concat = img_proc.Img(fname)
-                        if len(my_img.data) != len(my_img_4_concat.data):
-                            raise RuntimeError
-                        if len(my_img.data[0]) != len(my_img_4_concat.data[0]):
-                            raise RuntimeError
-                        my_img_4_concat = my_img_4_concat .save_img(my_img.concat(my_img_4_concat, 'horizontal'))
-                    case "Rotate":
-                        my_img2 = my_img.save_img(my_img.rotate())
-                    case "Salt_n_pepper":
-                        img_proc.salt_n_pepper()
-                    case "Segment":
-                        img_proc.segment()
-                #self.send_text_with_quote(msg['chat']['id'], "Please Enter Picture Name:", quoted_msg_id=msg["message_id"])
 
         #if msg["text"] != 'Please don\'t quote me':
         #    self.send_text_with_quote(msg['chat']['id'], msg["text"], quoted_msg_id=msg["message_id"])
+
+
