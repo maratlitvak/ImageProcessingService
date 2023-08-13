@@ -72,6 +72,5 @@ class TestBot(unittest.TestCase):
             self.bot.telegram_bot_client.send_photo.assert_called_once()
 
 
-
 if __name__ == '__main__':
     unittest.main()

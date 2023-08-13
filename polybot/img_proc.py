@@ -16,7 +16,7 @@ class Img:
         self.path = Path(path)
         self.data = rgb2gray(imread(path)).tolist()
 
-    def save_img(self,pictrs_arr):
+    def save_img(self, pictrs_arr):
         """
         Do not change the below implementation
         """
@@ -39,6 +39,7 @@ class Img:
             result.append(row_result)
 
         self.data = result
+        return self
 
     def contour(self):
         for i, row in enumerate(self.data):
@@ -47,6 +48,7 @@ class Img:
                 res.append(abs(row[j-1] - row[j]))
 
             self.data[i] = res
+        return self
 
     def rotate(self):
         rot_img = []
@@ -62,8 +64,17 @@ class Img:
         return rot_img
 
     def salt_n_pepper(self):
-        # TODO remove the `raise` below, and write your implementation
-        raise NotImplementedError()
+        rot_img = []
+        tmp_lst = []
+
+        for col in range(len(self.data[0])):
+            for list_no in range(len(self.data)):
+                tmp_lst.append(self.data[list_no][col])
+
+            tmp_lst.reverse()
+            rot_img.append(tmp_lst)
+            tmp_lst = []
+        return rot_img
 
     def concat(self, other_img, direction='horizontal'):
         concat_img = []
@@ -81,5 +92,14 @@ class Img:
             return concat_img
 
     def segment(self):
-        # TODO remove the `raise` below, and write your implementation
-        raise NotImplementedError()
+        rot_img = []
+        tmp_lst = []
+
+        for col in range(len(self.data[0])):
+            for list_no in range(len(self.data)):
+                tmp_lst.append(self.data[list_no][col])
+
+            tmp_lst.reverse()
+            rot_img.append(tmp_lst)
+            tmp_lst = []
+        return rot_img
