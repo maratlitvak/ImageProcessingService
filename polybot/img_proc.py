@@ -16,12 +16,12 @@ class Img:
         self.path = Path(path)
         self.data = rgb2gray(imread(path)).tolist()
 
-    def save_img(self, pictrs_arr):
+    def save_img(self):
         """
         Do not change the below implementation
         """
         new_path = self.path.with_name(self.path.stem + '_filtered' + self.path.suffix)
-        imsave(new_path, pictrs_arr, cmap='gray')
+        imsave(new_path, self.data, cmap='gray')
         return new_path
 
     def blur(self, blur_level=16):
@@ -39,7 +39,6 @@ class Img:
             result.append(row_result)
 
         self.data = result
-        return self
 
     def contour(self):
         for i, row in enumerate(self.data):
@@ -48,7 +47,6 @@ class Img:
                 res.append(abs(row[j-1] - row[j]))
 
             self.data[i] = res
-        return self
 
     def rotate(self):
         rot_img = []
@@ -61,7 +59,7 @@ class Img:
             tmp_lst.reverse()
             rot_img.append(tmp_lst)
             tmp_lst = []
-        return rot_img
+        self.data = rot_img
 
     def salt_n_pepper(self):
         rot_img = []

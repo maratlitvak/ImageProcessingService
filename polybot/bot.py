@@ -3,6 +3,7 @@ from loguru import (logger)
 import os
 import time
 from telebot.types import InputFile
+#import img_proc
 from polybot.img_proc import Img
 
 
@@ -77,7 +78,6 @@ class QuoteBot(Bot):
 class ImageProcessingBot(Bot):
 
     def handle_message(self, msg):
-        #if msg['chat']['first_name'] == 'Marat':
         pat = self.download_user_photo(msg)
         my_img = Img(pat)
         match msg['caption']:
@@ -87,20 +87,23 @@ class ImageProcessingBot(Bot):
                     raise RuntimeError('Error 1 !')
                 if len(my_img.data[0]) != len(my_img_2.data[0]):
                     raise RuntimeError('Error 2 !')
-                img_path = my_img_2.save_img(my_img.concat(my_img_2, 'horizontal'))
+                my_img.concat(my_img_2, 'horizontal')
+                img_path = my_img_2.save_img()
             case "Rotate":
-                img_path = my_img.save_img(my_img.rotate())
+                my_img.rotate()
+                img_path = my_img.save_img()
             case "Salt_n_pepper":
-                img_path = my_img.save_img(my_img.salt_n_pepper())
+                my_img.salt_n_pepper()
+                img_path = my_img.save_img()
             case "Segment":
-                img_path = my_img.save_img(my_img.segment())
+                my_img.segment()
+                img_path = my_img.save_img()
             case "Contour":
-                img_path = my_img.save_img(my_img.contour().data)
+                my_img.contour()
+                img_path = my_img.save_img()
             case "Blur":
-                img_path = my_img.save_img(my_img.blur().data)
-            case  _:
-                raise RuntimeError('No Case Entry')
+                my_img.blur()
+                img_path = my_img.save_img()
 
         self.send_photo(msg['chat']['id'], img_path)
-        #else:
-        #    self.send_text_with_quote(msg['chat']['id'], "aaa", quoted_msg_id=msg["message_id"])
+
