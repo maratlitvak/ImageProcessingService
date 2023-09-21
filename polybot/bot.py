@@ -1,14 +1,15 @@
 import telebot
-from loguru import (logger)
+from loguru import logger
 import os
 import time
 from telebot.types import InputFile
-#import img_proc
-from polybot.img_proc import Img
+import boto3
+import json
+from pprint import pprint
+import requests as r
 
 
 class Bot:
-
     def __init__(self, token, telegram_chat_url):
         # create a new instance of the TeleBot class.
         # all communication with Telegram servers are done using self.telegram_bot_client
@@ -66,44 +67,24 @@ class Bot:
         logger.info(f'Incoming message: {msg}')
         self.send_text(msg['chat']['id'], f'Your original message: {msg["text"]}')
 
+    def send_request(image , model_name='yolov5s'):
+        res = r.post('http://127.0.0.1:8081')
+        pprint(json.loads(res.text))
 
-class QuoteBot(Bot):
+
+class ObjectDetectionBot(Bot):
     def handle_message(self, msg):
         logger.info(f'Incoming message: {msg}')
+        try:
+            if self.is_current_msg_photo(msg):
+               photo_path = self.download_user_photo(msg)
+               s3 = boto3.resource('s3')
+               BUCKET = "maratl-bucket-s3"
+               s3.Bucket(BUCKET).upload_file(photo_path, photo_path)
+               self.send_request(photo_path)
+        except Exception as e:
+               self.send_text(msg['chat']['id'], f'Your original message: {msg["text"]}')
 
-        if msg["text"] != 'Please don\'t quote me':
-            self.send_text_with_quote(msg['chat']['id'], msg["text"], quoted_msg_id=msg["message_id"])
-
-
-class ImageProcessingBot(Bot):
-
-    def handle_message(self, msg):
-        pat = self.download_user_photo(msg)
-        my_img = Img(pat)
-        match msg['caption']:
-            case "Concat":
-                my_img_2 = Img(pat)
-                if len(my_img.data) != len(my_img_2.data):
-                    raise RuntimeError('Error 1 !')
-                if len(my_img.data[0]) != len(my_img_2.data[0]):
-                    raise RuntimeError('Error 2 !')
-                my_img.concat(my_img_2, 'horizontal')
-                img_path = my_img_2.save_img()
-            case "Rotate":
-                my_img.rotate()
-                img_path = my_img.save_img()
-            case "Salt_n_pepper":
-                my_img.salt_n_pepper()
-                img_path = my_img.save_img()
-            case "Segment":
-                my_img.segment()
-                img_path = my_img.save_img()
-            case "Contour":
-                my_img.contour()
-                img_path = my_img.save_img()
-            case "Blur":
-                my_img.blur()
-                img_path = my_img.save_img()
-
-        self.send_photo(msg['chat']['id'], img_path)
-
+            # TODO upload the photo to S3
+            # TODO send a request to the `yolo5` service for prediction
+            # TODO send results to the Telegram end-user
